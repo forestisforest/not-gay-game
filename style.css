@@ -1,0 +1,123 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  background: radial-gradient(ellipse at 50% 0%, #1a1035 0%, #0a0612 55%, #050308 100%);
+  color: #f5f0ff;
+  user-select: none;
+  cursor: crosshair;
+}
+
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 1.25rem 1.5rem 1rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(10, 6, 18, 0.95) 0%, rgba(10, 6, 18, 0.6) 70%, transparent 100%);
+  pointer-events: none;
+}
+
+.banner h1 {
+  font-size: clamp(1.1rem, 4vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #ff6bcb, #ffd36b, #6bffb8);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+.hint {
+  margin-top: 0.45rem;
+  font-size: 0.85rem;
+  color: rgba(245, 240, 255, 0.45);
+}
+
+.arena {
+  position: fixed;
+  inset: 0;
+}
+
+.logo {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff3d9a 0%, #ff8a3d 45%, #ffe03d 100%);
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.25),
+    0 12px 40px rgba(255, 61, 154, 0.45),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  will-change: transform;
+  transition: box-shadow 0.2s ease;
+}
+
+.logo.near-miss {
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.5),
+    0 16px 48px rgba(255, 200, 61, 0.6),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.logo-text {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(1rem, 3.5vw, 1.35rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #1a0a20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+}
+
+.logo-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  animation: shine 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes shine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -50% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner h1,
+  .logo-shine {
+    animation: none;
+  }
+}
