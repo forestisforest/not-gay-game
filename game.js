@@ -20,6 +20,8 @@
   let padding = 72;
   let fleeCooldown = 0;
   let hintCooldown = 0;
+  const CLICK_FLEE_FRAMES = 22;
+  const CLICK_FLEE_SPEED = 9;
 
   function measure() {
     const rect = logo.getBoundingClientRect();
@@ -80,25 +82,28 @@
     }
   }
 
-  function escapeClick(e) {
+  function fleeFromClick(clientX, clientY) {
     const cx = x + width / 2;
     const cy = y + height / 2;
-    const dx = cx - e.clientX;
-    const dy = cy - e.clientY;
-    const dist = Math.hypot(dx, dy);
-    const snapRadius = Math.max(width, height) * 2.5;
+    const dx = cx - clientX;
+    const dy = cy - clientY;
+    const dist = Math.hypot(dx, dy) || 1;
+    const nx = dx / dist;
+    const ny = dy / dist;
+    const closeness = Math.max(0, 1 - dist / 420);
+    const jump = 200 + closeness * 180 + Math.random() * 100;
 
-    if (dist < snapRadius) {
-      const angle = Math.atan2(dy, dx) || Math.random() * Math.PI * 2;
-      const jump = 180 + Math.random() * 120;
-      x += Math.cos(angle) * jump;
-      y += Math.sin(angle) * jump;
-      vx = Math.cos(angle) * 2.5;
-      vy = Math.sin(angle) * 2.5;
-      fleeCooldown = 8;
-      hint.textContent = "想点我？门都没有。";
-      hintCooldown = 90;
-    }
+    x += nx * jump;
+    y += ny * jump;
+    vx = nx * CLICK_FLEE_SPEED;
+    vy = ny * CLICK_FLEE_SPEED;
+    fleeCooldown = CLICK_FLEE_FRAMES;
+
+    logo.classList.add("flee-burst");
+    window.setTimeout(() => logo.classList.remove("flee-burst"), 280);
+
+    hint.textContent = closeness > 0.35 ? "想点我？门都没有。" : "你一点，我就飞。";
+    hintCooldown = 90;
   }
 
   function render() {
@@ -106,20 +111,20 @@
   }
 
   function tick() {
+    x += vx;
+    y += vy;
+
     if (fleeCooldown > 0) {
       fleeCooldown -= 1;
-    } else {
-      x += vx;
-      y += vy;
-
-      if (Math.random() < 0.004) {
-        vx += (Math.random() - 0.5) * 0.4;
-        vy += (Math.random() - 0.5) * 0.4;
-      }
+      vx *= 0.96;
+      vy *= 0.96;
+    } else if (Math.random() < 0.004) {
+      vx += (Math.random() - 0.5) * 0.4;
+      vy += (Math.random() - 0.5) * 0.4;
     }
 
     const speed = Math.hypot(vx, vy);
-    const maxSpeed = 2.2;
+    const maxSpeed = fleeCooldown > 0 ? CLICK_FLEE_SPEED : 2.2;
     if (speed > maxSpeed) {
       vx = (vx / speed) * maxSpeed;
       vy = (vy / speed) * maxSpeed;
@@ -144,10 +149,9 @@
     mouseY = e.clientY;
   });
 
-  document.addEventListener("mousedown", escapeClick);
-  document.addEventListener("touchstart", (e) => {
-    if (e.touches[0]) escapeClick(e.touches[0]);
-  }, { passive: true });
+  document.addEventListener("pointerdown", (e) => {
+    fleeFromClick(e.clientX, e.clientY);
+  });
 
   window.addEventListener("resize", () => {
     measure();

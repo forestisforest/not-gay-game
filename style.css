@@ -79,6 +79,16 @@ body {
     0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
+.logo.flee-burst {
+  transform-origin: center;
+  animation: flee-pop 0.28s ease-out;
+}
+
+@keyframes flee-pop {
+  0% { filter: brightness(1.35) saturate(1.2); }
+  100% { filter: brightness(1) saturate(1); }
+}
+
 .logo-text {
   position: relative;
   z-index: 1;
