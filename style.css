@@ -68,6 +68,9 @@ body {
     0 12px 40px rgba(255, 61, 154, 0.45),
     0 4px 16px rgba(0, 0, 0, 0.35);
   pointer-events: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-drag: none;
   will-change: transform;
   transition: box-shadow 0.2s ease;
 }
