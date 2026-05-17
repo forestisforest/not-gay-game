@@ -7,10 +7,12 @@
 | 线路 | 链接 | 适合 |
 |------|------|------|
 | 国际（GitHub Pages） | https://forestisforest.github.io/not-gay-game/ | 海外、港澳台、已翻墙 |
-| **国内镜像（jsDelivr）** | https://gcore.jsdelivr.net/gh/forestisforest/not-gay-game@main/index.html | **中国大陆用户首选** |
-| 备用 CDN | https://fastly.jsdelivr.net/gh/forestisforest/not-gay-game@main/index.html | jsDelivr 备用节点 |
+| **国内单文件版（推荐）** | https://gcore.jsdelivr.net/gh/forestisforest/not-gay-game@main/cn/index-standalone.html | **中国大陆用户首选**，无 GitHub 依赖 |
+| 国内多文件版 CDN | https://gcore.jsdelivr.net/gh/forestisforest/not-gay-game@main/cn/index.html | 同上，拆分资源 |
+| 国际 CDN 镜像 | https://gcore.jsdelivr.net/gh/forestisforest/not-gay-game@main/index.html | 国际源站的 CDN 加速 |
+| 备用 CDN | https://fastly.jsdelivr.net/gh/forestisforest/not-gay-game@main/cn/index-standalone.html | 节点备用 |
 
-> 国内用户若打不开 GitHub 链接，请使用 **gcore.jsdelivr.net** 那一行，内容与 GitHub Pages 一致，每次推送到 `main` 后会自动更新（约 1–5 分钟）。
+> **国内版源码包**在仓库 [`cn/`](cn/) 目录：含单文件 `index-standalone.html`（可离线双击打开），可上传到[码云 Gitee Pages](https://gitee.com) 或任意国内静态托管。构建命令：`python3 scripts/build-cn.py`
 
 ## 为什么国内打不开 GitHub Pages？
 

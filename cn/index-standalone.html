@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="点击图标证明你不是GAY - 国内单文件离线版" />
+  <title>证明你不是 GAY（国内单文件版）</title>
+  <style>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  background: radial-gradient(ellipse at 50% 0%, #1a1035 0%, #0a0612 55%, #050308 100%);
+  color: #f5f0ff;
+  user-select: none;
+  cursor: crosshair;
+}
+
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 1.25rem 1.5rem 1rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(10, 6, 18, 0.95) 0%, rgba(10, 6, 18, 0.6) 70%, transparent 100%);
+  pointer-events: none;
+}
+
+.banner h1 {
+  font-size: clamp(1.1rem, 4vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #ff6bcb, #ffd36b, #6bffb8);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+.hint {
+  margin-top: 0.45rem;
+  font-size: 0.85rem;
+  color: rgba(245, 240, 255, 0.45);
+}
+
+.mirror {
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: rgba(245, 240, 255, 0.35);
+  pointer-events: auto;
+}
+
+.mirror a {
+  color: rgba(255, 211, 107, 0.85);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mirror a:hover {
+  color: #ffe03d;
+}
+
+.arena {
+  position: fixed;
+  inset: 0;
+}
+
+.logo {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff3d9a 0%, #ff8a3d 45%, #ffe03d 100%);
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.25),
+    0 12px 40px rgba(255, 61, 154, 0.45),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform;
+  transition: box-shadow 0.2s ease;
+}
+
+.logo.near-miss {
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.5),
+    0 16px 48px rgba(255, 200, 61, 0.6),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.logo.flee-burst {
+  transform-origin: center;
+  animation: flee-pop 0.28s ease-out;
+}
+
+@keyframes flee-pop {
+  0% { filter: brightness(1.35) saturate(1.2); }
+  100% { filter: brightness(1) saturate(1); }
+}
+
+.logo-text {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(1rem, 3.5vw, 1.35rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #1a0a20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+}
+
+.logo-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  animation: shine 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes shine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -50% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner h1,
+  .logo-shine {
+    animation: none;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header class="banner">
+    <h1>点击图标证明你不是GAY</h1>
+    <p class="hint" id="hint">靠近试试？它可不会乖乖让你点中。</p>
+    <p class="mirror">国内单文件版 · 可离线打开 · 无外链依赖</p>
+  </header>
+  <main class="arena" id="arena"></main>
+  <div class="logo" id="logo" inert tabindex="-1" aria-hidden="true">
+    <span class="logo-text">我不是GAY</span>
+    <span class="logo-shine"></span>
+  </div>
+  <script>
+(function () {
+  const logo = document.getElementById("logo");
+  const hint = document.getElementById("hint");
+  const hints = [
+    "就差一点点……才怪。",
+    "手速不够，它可不会等你。",
+    "再近一点？它早溜了。",
+    "证明失败，图标拒绝被选中。",
+    "光标追得上，图标可不同意。",
+  ];
+
+  let x = window.innerWidth * 0.4;
+  let y = window.innerHeight * 0.5;
+  let vx = 0.55;
+  let vy = 0.42;
+  let mouseX = -9999;
+  let mouseY = -9999;
+  let width = 0;
+  let height = 0;
+  let padding = 72;
+  let fleeCooldown = 0;
+  let hintCooldown = 0;
+  const CLICK_FLEE_FRAMES = 22;
+  const CLICK_FLEE_SPEED = 9;
+  const HOVER_PAD = 100;
+  const CLICK_PAD = 120;
+
+  function measure() {
+    const rect = logo.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+  }
+
+  function bounds(pad = 0) {
+    return {
+      left: x - pad,
+      top: y - pad,
+      right: x + width + pad,
+      bottom: y + height + pad,
+    };
+  }
+
+  function isOverLogo(px, py, pad = HOVER_PAD) {
+    const b = bounds(pad);
+    return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
+  }
+
+  function clampPosition() {
+    const maxX = window.innerWidth - width;
+    const maxY = window.innerHeight - height;
+    const minY = 88;
+
+    if (x < padding) {
+      x = padding;
+      vx = Math.abs(vx);
+    }
+    if (x > maxX - padding) {
+      x = maxX - padding;
+      vx = -Math.abs(vx);
+    }
+    if (y < minY + padding) {
+      y = minY + padding;
+      vy = Math.abs(vy);
+    }
+    if (y > maxY - padding) {
+      y = maxY - padding;
+      vy = -Math.abs(vy);
+    }
+  }
+
+  function emergencyTeleport(awayX, awayY) {
+    const maxX = window.innerWidth - width;
+    const maxY = window.innerHeight - height;
+    const minY = 88;
+    const spots = [
+      [padding, minY + padding],
+      [maxX - padding, minY + padding],
+      [padding, maxY - padding],
+      [maxX - padding, maxY - padding],
+      [maxX / 2, minY + padding],
+      [maxX / 2, maxY - padding],
+      [padding, (minY + maxY) / 2],
+      [maxX - padding, (minY + maxY) / 2],
+    ];
+
+    let best = spots[0];
+    let bestDist = -1;
+
+    for (const [sx, sy] of spots) {
+      const cx = sx + width / 2;
+      const cy = sy + height / 2;
+      const d = Math.hypot(cx - awayX, cy - awayY);
+      if (d > bestDist) {
+        bestDist = d;
+        best = [sx, sy];
+      }
+    }
+
+    x = best[0];
+    y = best[1];
+
+    const cx = x + width / 2;
+    const cy = y + height / 2;
+    const dx = cx - awayX;
+    const dy = cy - awayY;
+    const dist = Math.hypot(dx, dy) || 1;
+    vx = (dx / dist) * CLICK_FLEE_SPEED;
+    vy = (dy / dist) * CLICK_FLEE_SPEED;
+    fleeCooldown = CLICK_FLEE_FRAMES;
+    render();
+  }
+
+  function enforceUntouchable(px, py) {
+    if (isOverLogo(px, py, HOVER_PAD)) {
+      emergencyTeleport(px, py);
+      return true;
+    }
+    return false;
+  }
+
+  function fleeFromCursor() {
+    const cx = x + width / 2;
+    const cy = y + height / 2;
+    const dx = cx - mouseX;
+    const dy = cy - mouseY;
+    const dist = Math.hypot(dx, dy);
+    const dangerRadius = Math.max(width, height) * 2.8;
+
+    if (dist < dangerRadius && dist > 0) {
+      const force = (dangerRadius - dist) / dangerRadius;
+      const push = 22 + force * 36;
+      const nx = dx / dist;
+      const ny = dy / dist;
+
+      x += nx * push;
+      y += ny * push;
+      vx += nx * force * 1.2;
+      vy += ny * force * 1.2;
+
+      logo.classList.add("near-miss");
+
+      if (dist < dangerRadius * 0.45) {
+        enforceUntouchable(mouseX, mouseY);
+      }
+
+      if (hintCooldown <= 0 && dist < dangerRadius * 0.55) {
+        hint.textContent = hints[Math.floor(Math.random() * hints.length)];
+        hintCooldown = 120;
+      }
+    } else {
+      logo.classList.remove("near-miss");
+    }
+  }
+
+  function fleeFromClick(clientX, clientY) {
+    if (isOverLogo(clientX, clientY, CLICK_PAD)) {
+      emergencyTeleport(clientX, clientY);
+      hint.textContent = "想点我？门都没有。";
+      hintCooldown = 90;
+      logo.classList.add("flee-burst");
+      window.setTimeout(() => logo.classList.remove("flee-burst"), 280);
+      return;
+    }
+
+    const cx = x + width / 2;
+    const cy = y + height / 2;
+    const dx = cx - clientX;
+    const dy = cy - clientY;
+    const dist = Math.hypot(dx, dy) || 1;
+    const nx = dx / dist;
+    const ny = dy / dist;
+    const closeness = Math.max(0, 1 - dist / 520);
+    const jump = 220 + closeness * 200 + Math.random() * 100;
+
+    x += nx * jump;
+    y += ny * jump;
+    vx = nx * CLICK_FLEE_SPEED;
+    vy = ny * CLICK_FLEE_SPEED;
+    fleeCooldown = CLICK_FLEE_FRAMES;
+
+    logo.classList.add("flee-burst");
+    window.setTimeout(() => logo.classList.remove("flee-burst"), 280);
+
+    hint.textContent = closeness > 0.35 ? "想点我？门都没有。" : "你一点，我就飞。";
+    hintCooldown = 90;
+  }
+
+  function render() {
+    logo.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  }
+
+  function tick() {
+    x += vx;
+    y += vy;
+
+    if (fleeCooldown > 0) {
+      fleeCooldown -= 1;
+      vx *= 0.96;
+      vy *= 0.96;
+    } else if (Math.random() < 0.004) {
+      vx += (Math.random() - 0.5) * 0.4;
+      vy += (Math.random() - 0.5) * 0.4;
+    }
+
+    const speed = Math.hypot(vx, vy);
+    const maxSpeed = fleeCooldown > 0 ? CLICK_FLEE_SPEED : 2.2;
+    if (speed > maxSpeed) {
+      vx = (vx / speed) * maxSpeed;
+      vy = (vy / speed) * maxSpeed;
+    }
+    if (speed < 0.35 && fleeCooldown <= 0) {
+      const angle = Math.random() * Math.PI * 2;
+      vx = Math.cos(angle) * 0.6;
+      vy = Math.sin(angle) * 0.6;
+    }
+
+    fleeFromCursor();
+    enforceUntouchable(mouseX, mouseY);
+    clampPosition();
+    render();
+
+    if (hintCooldown > 0) hintCooldown -= 1;
+
+    requestAnimationFrame(tick);
+  }
+
+  function trackPointer(e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (e.buttons > 0) {
+      enforceUntouchable(mouseX, mouseY);
+    }
+  }
+
+  document.addEventListener("pointermove", trackPointer, { passive: true });
+  document.addEventListener("mousemove", trackPointer, { passive: true });
+
+  document.addEventListener(
+    "pointerdown",
+    (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      fleeFromClick(e.clientX, e.clientY);
+    },
+    { capture: true }
+  );
+
+  document.addEventListener(
+    "click",
+    (e) => {
+      if (isOverLogo(e.clientX, e.clientY, CLICK_PAD)) {
+        e.preventDefault();
+        e.stopPropagation();
+        emergencyTeleport(e.clientX, e.clientY);
+      }
+    },
+    { capture: true }
+  );
+
+  window.addEventListener("resize", () => {
+    measure();
+    clampPosition();
+    render();
+  });
+
+  measure();
+  x = (window.innerWidth - width) / 2;
+  y = window.innerHeight * 0.45;
+  render();
+  requestAnimationFrame(tick);
+})();
+
+  </script>
+</body>
+</html>
