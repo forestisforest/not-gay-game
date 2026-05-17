@@ -1,0 +1,23 @@
+# 将 main 分支同步到 Gitee，便于开通 Gitee Pages（国内访问更稳定）
+# 使用前请在 GitHub Secrets 配置 GITEE_PRIVATE_KEY、GITEE_PUBLIC_KEY
+# 并将下方 YOUR_GITEE_USERNAME 改为你的码云用户名
+
+name: Sync to Gitee
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror to Gitee
+        uses: Yikun/hub-mirror-action@master
+        with:
+          src: github/forestisforest/not-gay-game
+          dst: gitee/YOUR_GITEE_USERNAME/not-gay-game
+          dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
+          static_key: ${{ secrets.GITEE_PUBLIC_KEY }}
+          force_update: true

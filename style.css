@@ -47,6 +47,23 @@ body {
   color: rgba(245, 240, 255, 0.45);
 }
 
+.mirror {
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: rgba(245, 240, 255, 0.35);
+  pointer-events: auto;
+}
+
+.mirror a {
+  color: rgba(255, 211, 107, 0.85);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mirror a:hover {
+  color: #ffe03d;
+}
+
 .arena {
   position: fixed;
   inset: 0;
