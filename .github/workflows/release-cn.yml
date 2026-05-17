@@ -1,0 +1,38 @@
+name: Release CN bundle
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cn/**"
+      - "game.js"
+      - "style.css"
+      - "scripts/build-cn.py"
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build cn bundle
+        run: python3 scripts/build-cn.py
+
+      - name: Pack zip
+        run: cd cn && zip -r ../not-gay-game-cn.zip .
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: cn-latest
+          name: 国内版离线包
+          body: |
+            国内用户下载此 zip，解压后双击 `index-standalone.html` 即可游玩（无需联网）。
+            在线地址（需能访问 GitHub Pages）：
+            https://forestisforest.github.io/not-gay-game/cn/index-standalone.html
+          files: not-gay-game-cn.zip
+          make_latest: false
+          overwrite_files: true

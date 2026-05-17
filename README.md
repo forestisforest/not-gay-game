@@ -6,13 +6,19 @@
 
 | 线路 | 链接 | 适合 |
 |------|------|------|
-| 国际（GitHub Pages） | https://forestisforest.github.io/not-gay-game/ | 海外、港澳台、已翻墙 |
-| **国内单文件版（推荐）** | https://gcore.jsdelivr.net/gh/forestisforest/not-gay-game@main/cn/index-standalone.html | **中国大陆用户首选**，无 GitHub 依赖 |
-| 国内多文件版 CDN | https://gcore.jsdelivr.net/gh/forestisforest/not-gay-game@main/cn/index.html | 同上，拆分资源 |
-| 国际 CDN 镜像 | https://gcore.jsdelivr.net/gh/forestisforest/not-gay-game@main/index.html | 国际源站的 CDN 加速 |
-| 备用 CDN | https://fastly.jsdelivr.net/gh/forestisforest/not-gay-game@main/cn/index-standalone.html | 节点备用 |
+| 国际（GitHub Pages） | https://forestisforest.github.io/not-gay-game/ | 海外、港澳台、可访问 GitHub |
+| **国内版（GitHub Pages）** | https://forestisforest.github.io/not-gay-game/cn/index-standalone.html | 单文件版，MIME 正确，可正常渲染 |
+| 国内版（多文件） | https://forestisforest.github.io/not-gay-game/cn/ | 同上，拆分 `css/js` |
 
-> **国内版源码包**在仓库 [`cn/`](cn/) 目录：含单文件 `index-standalone.html`（可离线双击打开），可上传到[码云 Gitee Pages](https://gitee.com) 或任意国内静态托管。构建命令：`python3 scripts/build-cn.py`
+> ⚠️ **不要用 jsDelivr 打开 `.html` 链接**：会返回 `text/plain`，浏览器只会显示一整页源代码（`<!DOCTYPE html>...`），游戏无法运行。jsDelivr 仅适合托管 JS/CSS 资源。
+
+### 中国大陆用户推荐
+
+1. **能打开 GitHub Pages 时**：用上面「国内版」两个链接  
+2. **完全打不开时**：下载 [`cn/index-standalone.html`](cn/index-standalone.html)（Raw 或 Release 压缩包），本地双击打开  
+3. **长期线上托管**：将 [`cn/`](cn/) 上传到[码云 Gitee Pages](https://gitee.com)（见下文）
+
+构建国内包：`python3 scripts/build-cn.py`
 
 ## 为什么国内打不开 GitHub Pages？
 

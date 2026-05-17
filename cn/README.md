@@ -1,6 +1,8 @@
 # 国内可访问版本
 
-本目录为**不依赖 GitHub Pages** 的发布包，适合中国大陆用户。
+本目录为国内发布包：单文件可离线玩，也可部署到码云等国内静态托管。
+
+> 请勿使用 jsDelivr 等 CDN 直接打开 `.html`，会显示源代码而非游戏。请用 GitHub Pages、码云 Pages，或本地双击 `index-standalone.html`。
 
 ## 文件说明
 
